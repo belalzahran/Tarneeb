@@ -13,11 +13,12 @@ class Round:
         self.tarneeb = ""
         self.winningTeam: int
         self.bet = 6
-        self.bettingTeam: int
+        self.teamPoints: int
         self.hands = {}
-        self.team1Points = 0
-        self.team2Points = 0
         self.betWinningPlayer: Player
+        self.teamPoints = {1: 0, 2: 0}
+        self.offensiveTeam: int
+        self.defensiveTeam: int
 
 
     def startBetting(self, players):
@@ -48,8 +49,10 @@ class Round:
             print("\n\n")
             playersStillBetting = [player for player in players if player.bettingStatus is True]
 
-        self.bettingTeam = self.betWinningPlayer.team
         print(f"{self.betWinningPlayer.name}, you won the bet at {self.bet}")
+
+        self.offensiveTeam = self.betWinningPlayer.team
+        self.defensiveTeam = 0 if self.offensiveTeam is 1 else 1
         self.tarneeb = input("Please choose the neeb:")
         print("\n\n")
 
@@ -72,7 +75,7 @@ class Round:
         currPlayingId = self.betWinningPlayer.id
         lastWinningPlayerId = self.betWinningPlayer.id
         
-        while max(playerHands) > 0:
+        while max(playerHands) > 0 and self.teamPoints[self.offensiveTeam] < self.bet and self.teamPoints[self.defensiveTeam] < (13 - self.bet + 1):
             
             tableSuit = ""
             tableStack = defaultdict(int)
@@ -111,14 +114,11 @@ class Round:
 
             tableStack = defaultdict(int)
 
-            if playerDict[lastWinningPlayerId].team == 1:
-                self.team1Points += 1
-            else:
-                self.team2Points += 1
+            self.teamPoints[playerDict[lastWinningPlayerId].team] += 1
 
             print(f"Score")
-            print(f"\tTeam 1: {self.team1Points}")
-            print(f"\tTeam 2: {self.team2Points}")
+            print(f"\tTeam 1: {self.teamPoints[1]}")
+            print(f"\tTeam 2: {self.teamPoints[2]}")
             # empty table stack
 
 
